@@ -1,6 +1,7 @@
 package org.bahmni.reports.web.security;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bahmni.reports.BahmniReportsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 @Component
 public class OpenMRSAuthenticator {
 
-    private static final Logger logger = Logger.getLogger(OpenMRSAuthenticator.class);
+    private static final Logger logger = LogManager.getLogger(OpenMRSAuthenticator.class);
     private static final String WHOAMI_URL = "/bahmnicore/whoami";
     public static final String OPENMRS_SESSION_ID_COOKIE_NAME = "JSESSIONID";
 
@@ -50,32 +51,6 @@ public class OpenMRSAuthenticator {
         } catch (HttpClientErrorException exception) {
             logger.warn("Could not authenticate with OpenMRS", exception);
             return new ResponseEntity<>(exception.getStatusCode());
-        }
-    }
-
-    static class Privileges extends ArrayList<Privilege> {
-        boolean hasReportingPrivilege() {
-            for (Privilege privilege : this) {
-                if (privilege.isReportingPrivilege()) return true;
-            }
-            return false;
-        }
-    }
-
-    static class Privilege {
-        static final String VIEW_REPORTS_PRIVILEGE = "app:reports";
-        private String name;
-
-        String getName() {
-            return name;
-        }
-
-        private void setName(String name) {
-            this.name = name;
-        }
-
-        boolean isReportingPrivilege() {
-            return name.equals(VIEW_REPORTS_PRIVILEGE);
         }
     }
 }
